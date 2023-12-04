@@ -1,35 +1,83 @@
 fileFormatVersion: 2
 guid: d1aa0f1723229f343af5a87ebe6aa65a
 ModelImporter:
-  serializedVersion: 23
-  fileIDToRecycleName:
-    100000: //RootNode
-    100002: PT_Medieval_bow_01_down_01
-    100004: PT_Medieval_bow_01_down_02
-    100006: PT_Medieval_bow_01_down_03
-    100008: PT_Medieval_bow_01_down_04
-    100010: PT_Medieval_bow_01_root
-    100012: PT_Medieval_bow_01_string
-    100014: PT_Medieval_bow_01_up_01
-    100016: PT_Medieval_bow_01_up_02
-    100018: PT_Medieval_bow_01_up_03
-    100020: PT_Medieval_bow_01_up_04
-    400000: //RootNode
-    400002: PT_Medieval_bow_01_down_01
-    400004: PT_Medieval_bow_01_down_02
-    400006: PT_Medieval_bow_01_down_03
-    400008: PT_Medieval_bow_01_down_04
-    400010: PT_Medieval_bow_01_root
-    400012: PT_Medieval_bow_01_string
-    400014: PT_Medieval_bow_01_up_01
-    400016: PT_Medieval_bow_01_up_02
-    400018: PT_Medieval_bow_01_up_03
-    400020: PT_Medieval_bow_01_up_04
-    7400000: Take 001
-    9500000: //RootNode
+  serializedVersion: 22200
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: //RootNode
+  - first:
+      1: 100002
+    second: PT_Medieval_bow_01_down_01
+  - first:
+      1: 100004
+    second: PT_Medieval_bow_01_down_02
+  - first:
+      1: 100006
+    second: PT_Medieval_bow_01_down_03
+  - first:
+      1: 100008
+    second: PT_Medieval_bow_01_down_04
+  - first:
+      1: 100010
+    second: PT_Medieval_bow_01_root
+  - first:
+      1: 100012
+    second: PT_Medieval_bow_01_string
+  - first:
+      1: 100014
+    second: PT_Medieval_bow_01_up_01
+  - first:
+      1: 100016
+    second: PT_Medieval_bow_01_up_02
+  - first:
+      1: 100018
+    second: PT_Medieval_bow_01_up_03
+  - first:
+      1: 100020
+    second: PT_Medieval_bow_01_up_04
+  - first:
+      4: 400000
+    second: //RootNode
+  - first:
+      4: 400002
+    second: PT_Medieval_bow_01_down_01
+  - first:
+      4: 400004
+    second: PT_Medieval_bow_01_down_02
+  - first:
+      4: 400006
+    second: PT_Medieval_bow_01_down_03
+  - first:
+      4: 400008
+    second: PT_Medieval_bow_01_down_04
+  - first:
+      4: 400010
+    second: PT_Medieval_bow_01_root
+  - first:
+      4: 400012
+    second: PT_Medieval_bow_01_string
+  - first:
+      4: 400014
+    second: PT_Medieval_bow_01_up_01
+  - first:
+      4: 400016
+    second: PT_Medieval_bow_01_up_02
+  - first:
+      4: 400018
+    second: PT_Medieval_bow_01_up_03
+  - first:
+      4: 400020
+    second: PT_Medieval_bow_01_up_04
+  - first:
+      74: 7400000
+    second: Take 001
+  - first:
+      95: 9500000
+    second: //RootNode
   externalObjects: {}
   materials:
-    importMaterials: 1
+    materialImportMode: 1
     materialName: 0
     materialSearch: 1
     materialLocation: 0
@@ -38,8 +86,10 @@ ModelImporter:
     bakeSimulation: 0
     resampleCurves: 1
     optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
     motionNodeName: 
-    rigImportErrors: 
+    rigImportErrors: "Invalid Avatar Rig Configuration. Missing or invalid transform:\n\tRequired
+      human bone 'RightUpperLeg' not found\n"
     rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
@@ -47,7 +97,7 @@ ModelImporter:
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
     importConstraints: 0
-    animationCompression: 1
+    animationCompression: 3
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
@@ -58,6 +108,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Take 001
       takeName: Take 001
+      internalID: 0
       firstFrame: 0
       lastFrame: 40
       wrapMode: 0
@@ -112,25 +163,36 @@ ModelImporter:
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 1
     importVisibility: 0
     importBlendShapes: 1
     importCameras: 0
     importLights: 0
+    nodeNameCollisionStrategy: 0
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
+    bakeAxisConversion: 0
     preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
     indexFormat: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
     useFileScale: 1
-    previousCalculatedGlobalScale: 0.01
-    hasPreviousCalculatedGlobalScale: 1
+    strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
@@ -139,12 +201,67 @@ ModelImporter:
     legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
+  referencedClips: []
   importAnimation: 1
-  copyAvatar: 0
   humanDescription:
-    serializedVersion: 2
+    serializedVersion: 3
     human: []
-    skeleton: []
+    skeleton:
+    - name: PT_Medieval_Bow_01_anim(Clone)
+      parentName: 
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: PT_Medieval_bow_01_root
+      parentName: PT_Medieval_Bow_01_anim(Clone)
+      position: {x: 0.0013312118, y: 0.0015759772, z: 0}
+      rotation: {x: 0, y: -0, z: -0.6650185, w: 0.7468269}
+      scale: {x: 1, y: 1, z: 1}
+    - name: PT_Medieval_bow_01_down_01
+      parentName: PT_Medieval_bow_01_root
+      position: {x: 0.09715752, y: -0.022904482, z: 0}
+      rotation: {x: 9.426671e-17, y: -7.589825e-17, z: 0.22870895, w: 0.9734949}
+      scale: {x: 1, y: 1, z: 1}
+    - name: PT_Medieval_bow_01_down_02
+      parentName: PT_Medieval_bow_01_down_01
+      position: {x: 0.06704024, y: -0.06709992, z: 0}
+      rotation: {x: 0, y: 0, z: 0.06580588, w: 0.9978325}
+      scale: {x: 1, y: 1, z: 1}
+    - name: PT_Medieval_bow_01_down_03
+      parentName: PT_Medieval_bow_01_down_02
+      position: {x: 0.077981584, y: -0.13571239, z: 0}
+      rotation: {x: 0.018078413, y: 0.006357995, z: 0.11218546, w: 0.99350256}
+      scale: {x: 1, y: 1, z: 1}
+    - name: PT_Medieval_bow_01_down_04
+      parentName: PT_Medieval_bow_01_down_03
+      position: {x: 0.046831377, y: -0.1646828, z: 0}
+      rotation: {x: -0.019081507, y: 0.0017745995, z: 0.31305727, w: 0.949541}
+      scale: {x: 1, y: 1, z: 1}
+    - name: PT_Medieval_bow_01_string
+      parentName: PT_Medieval_bow_01_root
+      position: {x: -0.025674757, y: -0.23444763, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: PT_Medieval_bow_01_up_01
+      parentName: PT_Medieval_bow_01_root
+      position: {x: -0.09982109, y: 0.000000009351524, z: 0}
+      rotation: {x: 0, y: 0, z: 0.13813779, w: 0.990413}
+      scale: {x: 1, y: 1, z: 1}
+    - name: PT_Medieval_bow_01_up_02
+      parentName: PT_Medieval_bow_01_up_01
+      position: {x: -0.09485124, y: -0.000000159233, z: 0}
+      rotation: {x: -0, y: -0, z: 0.052332018, w: 0.99862975}
+      scale: {x: 1, y: 1, z: 1}
+    - name: PT_Medieval_bow_01_up_03
+      parentName: PT_Medieval_bow_01_up_02
+      position: {x: -0.15652151, y: 0.000000033147202, z: 0}
+      rotation: {x: -0, y: -0, z: -0.0020347799, w: 0.999998}
+      scale: {x: 1, y: 1, z: 1}
+    - name: PT_Medieval_bow_01_up_04
+      parentName: PT_Medieval_bow_01_up_03
+      position: {x: -0.17121217, y: -0.00000013131239, z: 0}
+      rotation: {x: 0, y: 0, z: 0.44570723, w: 0.89517885}
+      scale: {x: 1, y: 1, z: 1}
     armTwist: 0.5
     foreArmTwist: 0.5
     upperLegTwist: 0.5
@@ -152,13 +269,19 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
+    globalScale: 1
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
+  avatarSetup: 1
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
+  importBlendShapeDeformPercent: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
   additionalBone: 0
   userData: 
   assetBundleName: 
