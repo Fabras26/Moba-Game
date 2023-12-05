@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -11,15 +12,21 @@ public class Movement : MonoBehaviour
 
     [SerializeField]
     private float attackRange = 5f;
-    private float rotateVelocitry;
+    [SerializeField]
 
+    private float rotationSpeed = 0.05f;
+    private float rotateVelocity = 1f;
     float motionSmoothTime = 0.1f;
+
+    private Enemy targetEnemy;
+    private HighlightManager highlight;
 
     void Start()
     {
         anim = GetComponent<Animator>();
         GameCamera = Camera.main;
         agent = GetComponent<NavMeshAgent>();
+        highlight = GetComponent<HighlightManager>();
     }
 
     // Update is called once per frame
@@ -41,18 +48,30 @@ public class Movement : MonoBehaviour
                 {
                     GoTo(hit.point);
                 }
+                if (hit.collider.GetComponent<Enemy>())
+                {
+                    GoTo(hit.collider.GetComponent<Enemy>());
+                }
+            }
+        }
+        if (targetEnemy != null)
+        {
+            if(Vector3.Distance(transform.position, targetEnemy.transform.position) > attackRange)
+            {
+                agent.SetDestination(targetEnemy.transform.position);
             }
         }
     }
     void Attack()
     {
-        if (Input.GetMouseButton(0))
+        if(targetEnemy != null &&  Vector3.Distance(transform.position, targetEnemy.transform.position) <= attackRange)
         {
             anim.SetBool("Attack", true);
         }
         else
         {
             anim.SetBool("Attack", false);
+
         }
     }
 
@@ -63,9 +82,33 @@ public class Movement : MonoBehaviour
     }
     public virtual void GoTo(Vector3 position)
     {
+        if (targetEnemy != null) targetEnemy = null;
+        highlight.DeselectHighlight();
         agent.SetDestination(position);
         agent.isStopped = false;
         agent.stoppingDistance = 0;
+        Rotation(position);
+    }
+    public virtual void GoTo(Enemy target)
+    {
+        highlight.SelectHighlight(target.transform);
+        targetEnemy = target;
+        agent.SetDestination(target.transform.position);
+        agent.isStopped = false;
+        agent.stoppingDistance = attackRange;
+        Rotation(target.transform.position);
+    }
+    void Rotation(Vector3 target)
+    {
+        Quaternion rotationToLookAt = Quaternion.LookRotation(target - transform.position);
+        float rotationY = Mathf.SmoothDampAngle(transform.eulerAngles.y,rotationToLookAt.eulerAngles.y, ref rotateVelocity, rotationSpeed * (Time.deltaTime * 5));
+
+        transform.eulerAngles = new Vector3(0, rotationY, 0);
+    }
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position + new Vector3(0,1,0), attackRange);
     }
 
 

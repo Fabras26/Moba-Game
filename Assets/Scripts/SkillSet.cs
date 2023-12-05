@@ -26,7 +26,7 @@ public class SkillSet : MonoBehaviour
             OnAbilityPressed4();
         }
     }
-    public virtual void AbilityRealesed(int abilityIndex)
+    public virtual void AbilityReleased(int abilityIndex)
     {
         if (casting) return;
         casting = true;
@@ -47,7 +47,7 @@ public class SkillSet : MonoBehaviour
             OnAbilityReleased4();
         }
     }
-    public virtual void OnAbilityPressed1() {}
+    public virtual void OnAbilityPressed1() { }
     public virtual void OnAbilityPressed2() { }
     public virtual void OnAbilityPressed3() { }
     public virtual void OnAbilityPressed4() { }
