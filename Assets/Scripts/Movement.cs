@@ -11,9 +11,6 @@ public class Movement : MonoBehaviour
     private Camera GameCamera;
 
     [SerializeField]
-    private float attackRange = 5f;
-    [SerializeField]
-
     private float rotationSpeed = 0.05f;
     private float rotateVelocity = 1f;
     float motionSmoothTime = 0.1f;
@@ -21,12 +18,19 @@ public class Movement : MonoBehaviour
     private Enemy targetEnemy;
     private HighlightManager highlight;
 
+    private Stats stats;
     void Start()
     {
+        stats = GetComponent<Stats>();
         anim = GetComponent<Animator>();
         GameCamera = Camera.main;
         agent = GetComponent<NavMeshAgent>();
         highlight = GetComponent<HighlightManager>();
+        agent.speed = stats.MoveSpeed;
+    }
+    public Enemy GetTarget() 
+    {
+        return targetEnemy;
     }
 
     // Update is called once per frame
@@ -56,7 +60,7 @@ public class Movement : MonoBehaviour
         }
         if (targetEnemy != null)
         {
-            if(Vector3.Distance(transform.position, targetEnemy.transform.position) > attackRange)
+            if(Vector3.Distance(transform.position, targetEnemy.transform.position) > stats.Range)
             {
                 agent.SetDestination(targetEnemy.transform.position);
             }
@@ -64,7 +68,7 @@ public class Movement : MonoBehaviour
     }
     void Attack()
     {
-        if(targetEnemy != null &&  Vector3.Distance(transform.position, targetEnemy.transform.position) <= attackRange)
+        if(targetEnemy != null &&  Vector3.Distance(transform.position, targetEnemy.transform.position) <= stats.Range)
         {
             anim.SetBool("Attack", true);
         }
@@ -95,7 +99,7 @@ public class Movement : MonoBehaviour
         targetEnemy = target;
         agent.SetDestination(target.transform.position);
         agent.isStopped = false;
-        agent.stoppingDistance = attackRange;
+        agent.stoppingDistance = stats.Range;
         Rotation(target.transform.position);
     }
     void Rotation(Vector3 target)
@@ -107,8 +111,9 @@ public class Movement : MonoBehaviour
     }
     void OnDrawGizmos()
     {
+        stats = GetComponent<Stats>();
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position + new Vector3(0,1,0), attackRange);
+        Gizmos.DrawWireSphere(transform.position + new Vector3(0,1,0), stats.Range);
     }
 
 

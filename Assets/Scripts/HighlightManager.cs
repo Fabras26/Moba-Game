@@ -30,8 +30,11 @@ public class HighlightManager : MonoBehaviour
             if (hit.transform.CompareTag("Enemy"))
             {
                 if (hit.transform == selectedObj && selectedObj != null) return;
-                if (highlightedObj == null || highlightedObj != hit.transform)
+
+                if (highlightedObj != hit.transform)
                 {
+                    if (highlightedObj != null) highlighOutline.enabled = false;
+
                     highlightedObj = hit.transform;
                     highlighOutline = highlightedObj.GetComponent<Outline>();
                     highlighOutline.OutlineColor = Color.yellow;

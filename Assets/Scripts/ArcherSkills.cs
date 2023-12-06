@@ -9,51 +9,22 @@ public class ArcherSkills : Abilities
     [Header("Abilities Properties")]
     public float maxAbilityDistance3 = 7;
 
+    public Projectile projectileAbility;
+
     public override void OnStart()
     {
         abilityAim3.enabled = false;
     }
 
-    public override void OnAbilityPressed1() { 
-    base.OnAbilityPressed1();
-    
-    }
-    public override void OnAbilityPressed2() {
-        base.OnAbilityPressed2();
-    }
     public override void OnAbilityPressed3() 
     {
         base.OnAbilityPressed3();
         abilityAim3.enabled = true;
     }
-    public override void OnAbilityPressed4()
-    { 
-        base.OnAbilityPressed4();
-    }
-    public override void OnAbilityReleased1() 
-    { 
-        base.OnAbilityReleased1();
-    }
-    public override void OnAbilityReleased2()
-    { 
-        base.OnAbilityReleased2();
-    }
     public override void OnAbilityReleased3() 
     { 
         base.OnAbilityReleased3();
         abilityAim3.enabled = false;
-    }
-    public override void OnAbilityReleased4() 
-    { 
-        base.OnAbilityReleased4();
-    }
-
-    public override void OnAbilitySkillShot1()
-    {
-    }
-    public override void OnAbilitySkillShot2() 
-    {
-       
     }
     public override void OnAbilitySkillShot3()
     {
@@ -74,7 +45,6 @@ public class ArcherSkills : Abilities
         var newHitPos = transform.position + hitPosDir * distance;
         abilityAim3.transform.position = newHitPos;
     }
-    public override void OnAbilitySkillShot4() { }
     public override void CancelSkill(int number, Image abilitySkillshot)
     {
         base.CancelSkill(number, abilitySkillshot);
@@ -83,4 +53,18 @@ public class ArcherSkills : Abilities
             abilityAim3.enabled = false;
         }
     }
+    public override void Skill1()
+    {
+    }
+    public override void Skill2()
+    {
+
+    }
+    public override void Skill3()
+    {
+    }
+    public override void Skill4()
+    {
+    }
+
 }

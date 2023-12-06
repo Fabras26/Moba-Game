@@ -4,7 +4,18 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    // Start is called before the first frame update
+    private bool dead;
+    [SerializeField]
+    private Transform projectileTarget;
+
+    public Transform GetTarget()
+    {
+        return projectileTarget;
+    }
+    public bool isDead()
+    {
+        return dead;
+    }
     void Start()
     {
         

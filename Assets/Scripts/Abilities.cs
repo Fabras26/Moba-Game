@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using UnityEngine.UIElements.Experimental;
 public class Abilities : MonoBehaviour
 {
+    private Animator anim;
     [Header("Ability 1")]
     public Image abilityImage1;
     public TextMeshProUGUI abilityText1;
@@ -39,14 +40,14 @@ public class Abilities : MonoBehaviour
     [SerializeField]
     private float abilityCooldown4 = 30;
 
-    public bool isAbilityCooldown1 =false;
-    public bool isAbilityCooldown2 =false;
-    public bool isAbilityCooldown3 =false;
-    public bool isAbilityCooldown4 =false;
-    public float currentAbilityCooldown1;
-    public float currentAbilityCooldown2;
-    public float currentAbilityCooldown3;
-    public float currentAbilityCooldown4;
+    private bool isAbilityCooldown1 =false;
+    private bool isAbilityCooldown2 =false;
+    private bool isAbilityCooldown3 =false;
+    private bool isAbilityCooldown4 =false;
+    private float currentAbilityCooldown1;
+    private float currentAbilityCooldown2;
+    private float currentAbilityCooldown3;
+    private float currentAbilityCooldown4;
 
     public bool casting;
 
@@ -63,6 +64,7 @@ public class Abilities : MonoBehaviour
     //public SkillSet skills;
     void Start()
     {
+        anim = GetComponent<Animator>();
         cam = Camera.main;
         ResetAllCooldown();
         OnStart();
@@ -215,6 +217,7 @@ public class Abilities : MonoBehaviour
     }
     public virtual void AbilityReleased(int abilityIndex)
     {
+        anim.SetTrigger("Skill" + abilityIndex);
         abilitiesCanvas.enabled = false;
         if (abilityIndex == 1)
         {
@@ -233,7 +236,8 @@ public class Abilities : MonoBehaviour
             OnAbilityReleased4();
         }
     }
-    public virtual void OnAbilityPressed1() {
+    public virtual void OnAbilityPressed1() 
+    {
         abilitySkillshot1.enabled = true;
 
     }
@@ -248,7 +252,6 @@ public class Abilities : MonoBehaviour
     {
         abilitySkillshot4.enabled = true;
     }
-
     public virtual void OnAbilityReleased1() 
     {
         abilitySkillshot1.enabled = false;
@@ -278,6 +281,22 @@ public class Abilities : MonoBehaviour
     public virtual void OnAbilitySkillShot2() { }
     public virtual void OnAbilitySkillShot3() { }
     public virtual void OnAbilitySkillShot4() { }
+
+    public void UseSkill(int number)
+    {
+        switch (number)
+        {
+            case 1: Skill1(); break;
+            case 2: Skill2(); break;
+            case 3: Skill3(); break;
+            case 4: Skill4(); break;
+        }
+    }
+    public virtual void Skill1() { }
+    public virtual void Skill2() { }
+    public virtual void Skill3() { }
+    public virtual void Skill4() { }
+
     #endregion
 
 
