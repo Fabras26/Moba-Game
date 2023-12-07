@@ -67,4 +67,13 @@ public class HighlightManager : MonoBehaviour
         selectedObj.GetComponent<Outline>().enabled = false;
         selectedObj = null;
     }
+    public void UnableHighlight()
+    {
+        if (highlightedObj != null)
+        {
+            if (highlightedObj != selectedObj) highlighOutline.enabled = false;
+            highlightedObj = null;
+        }
+        this.enabled = false;
+    }
 }

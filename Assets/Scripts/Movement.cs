@@ -11,12 +11,14 @@ public class Movement : MonoBehaviour
     private Camera GameCamera;
 
     [SerializeField]
-    private float rotationSpeed = 0.05f;
-    private float rotateVelocity = 1f;
+    public float rotationSpeed = 0.05f;
+    public float rotateVelocity = 1f;
     float motionSmoothTime = 0.1f;
 
     private Enemy targetEnemy;
     private HighlightManager highlight;
+
+    private Vector3 targetPosition;
 
     private Stats stats;
     void Start()
@@ -38,7 +40,6 @@ public class Movement : MonoBehaviour
     {
         Move();
         Animation();
-        Attack();
     }
     void Move()
     {
@@ -50,7 +51,8 @@ public class Movement : MonoBehaviour
             {
                 if(hit.collider.tag == "Ground")
                 {
-                    GoTo(hit.point);
+                    targetPosition = hit.point;
+                    GoTo(targetPosition);
                 }
                 if (hit.collider.GetComponent<Enemy>())
                 {
@@ -64,18 +66,6 @@ public class Movement : MonoBehaviour
             {
                 agent.SetDestination(targetEnemy.transform.position);
             }
-        }
-    }
-    void Attack()
-    {
-        if(targetEnemy != null &&  Vector3.Distance(transform.position, targetEnemy.transform.position) <= stats.Range)
-        {
-            anim.SetBool("Attack", true);
-        }
-        else
-        {
-            anim.SetBool("Attack", false);
-
         }
     }
 
@@ -108,6 +98,18 @@ public class Movement : MonoBehaviour
         float rotationY = Mathf.SmoothDampAngle(transform.eulerAngles.y,rotationToLookAt.eulerAngles.y, ref rotateVelocity, rotationSpeed * (Time.deltaTime * 5));
 
         transform.eulerAngles = new Vector3(0, rotationY, 0);
+    }
+    public void Stop(Vector3 target)
+    {
+        Quaternion rotationToLookAt = Quaternion.LookRotation(target - transform.position);
+        float rotationY = Mathf.SmoothDampAngle(transform.eulerAngles.y, rotationToLookAt.eulerAngles.y, ref rotateVelocity, 0.001f * (Time.deltaTime * 5));
+        transform.eulerAngles = new Vector3(0, rotationY, 0);
+        agent.isStopped = true;
+    }
+    public void Walk()
+    {
+        if (targetEnemy != null) GoTo(targetEnemy);
+        else if(Vector3.Distance(transform.position, targetPosition)> 1)GoTo(targetPosition);
     }
     void OnDrawGizmos()
     {

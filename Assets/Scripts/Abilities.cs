@@ -2,68 +2,123 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements.Experimental;
+[System.Serializable]
+public class Skill
+{
+
+    [Header("Visual")]
+    public Image imageHud;
+    public TextMeshProUGUI cooldownText;
+    public Image skillshot;
+
+    [SerializeField]
+    private KeyCode key;
+    [Header("Properties")]
+    [SerializeField]
+    private float cooldown = 5;
+    private float currentCooldown;
+    private bool isCooldown = false;
+    [SerializeField]
+    private float damage = 200;
+    [SerializeField]
+    private float range = 7;
+
+    public Color gizmosColor = Color.white;
+    public float Cooldown { get => cooldown; set => cooldown = value; }
+    public float CurrentCooldown { get => currentCooldown; set => currentCooldown = value; }
+    public bool IsCooldown { get => isCooldown; set => isCooldown = value; }
+    public float Damage { get => damage; set => damage = value; }
+    public float Range { get => range; set => range = value; }
+    public KeyCode Key { get => key; set => key = value; }
+
+    public void ResetCooldown()
+    {
+        imageHud.fillAmount = 0;
+        CurrentCooldown = 0;
+        skillshot.enabled = false;
+        cooldownText.text = string.Empty;
+    }
+    public void CheckCooldown()
+    {
+        if (IsCooldown)
+        {
+            CurrentCooldown -= Time.deltaTime;
+            if (CurrentCooldown <= 0f)
+            {
+                IsCooldown = false;
+                CurrentCooldown = 0f;
+
+                if (imageHud != null)
+                {
+                    imageHud.fillAmount = 0;
+                }
+                if (cooldownText != null)
+                {
+                    cooldownText.text = "";
+                }
+            }
+            else
+            {
+                if (imageHud != null)
+                {
+                    imageHud.fillAmount = CurrentCooldown / Cooldown;
+                }
+
+                if (cooldownText != null)
+                {
+                    cooldownText.text = Mathf.Ceil(CurrentCooldown).ToString();
+                }
+            }
+
+        }
+    }
+    public void CancelSkill()
+    {
+        Cursor.visible = true;
+        if (skillshot != null) skillshot.enabled = false;
+    }
+    public void SkillInput()
+    {
+        Cursor.visible = false;
+        if(skillshot != null)skillshot.enabled = true;
+    }
+    public void SkillReleased()
+    {
+        Cursor.visible = true;
+        if (skillshot != null) skillshot.enabled = false;
+        IsCooldown = true;
+        CurrentCooldown = Cooldown;
+    }
+}
+
 public class Abilities : MonoBehaviour
 {
+    HighlightManager highlight;
+
     private Animator anim;
-    [Header("Ability 1")]
-    public Image abilityImage1;
-    public TextMeshProUGUI abilityText1;
-    [SerializeField]
-    private KeyCode abilityKey1;
-    [SerializeField]
-    private float abilityCooldown1 = 5;
-
-    [Header("Ability 2")]
-    public Image abilityImage2;
-    public TextMeshProUGUI abilityText2;
-    [SerializeField]
-    private KeyCode abilityKey2;
-    [SerializeField]
-    private float abilityCooldown2 = 7;
-
-    [Header("Ability 3")]
-    public Image abilityImage3;
-    public TextMeshProUGUI abilityText3;
-    [SerializeField]
-    private KeyCode abilityKey3;
-    [SerializeField]
-    private float abilityCooldown3 = 5;
-
-    [Header("Ability 4")]
-    public Image abilityImage4;
-    public TextMeshProUGUI abilityText4;
-    [SerializeField]
-    private KeyCode abilityKey4;
-    [SerializeField]
-    private float abilityCooldown4 = 30;
-
-    private bool isAbilityCooldown1 =false;
-    private bool isAbilityCooldown2 =false;
-    private bool isAbilityCooldown3 =false;
-    private bool isAbilityCooldown4 =false;
-    private float currentAbilityCooldown1;
-    private float currentAbilityCooldown2;
-    private float currentAbilityCooldown3;
-    private float currentAbilityCooldown4;
-
-    public bool casting;
+    public List<Skill> skills;
+    private bool casting;
 
     protected Vector3 position;
     protected RaycastHit hit;
     protected Ray ray;
+    protected Movement moveScript;
     private Camera cam;
     [Header("Abilities Indicator")]
     public Canvas abilitiesCanvas;
-    public Image abilitySkillshot1;
-    public Image abilitySkillshot2;
-    public Image abilitySkillshot3;
-    public Image abilitySkillshot4;
-    //public SkillSet skills;
+    public LayerMask ground;
+
+    protected Vector3 mousePosition;
     void Start()
     {
+        casting = false;
+        highlight = GetComponent<HighlightManager>();
+
+        moveScript = GetComponent<Movement>();
         anim = GetComponent<Animator>();
         cam = Camera.main;
         ResetAllCooldown();
@@ -89,201 +144,105 @@ public class Abilities : MonoBehaviour
     void ResetAllCooldown()
     {
         abilitiesCanvas.enabled = false;
-        abilitySkillshot1.enabled = false;
-        abilitySkillshot2.enabled = false;
-        abilitySkillshot3.enabled = false;
-        abilitySkillshot4.enabled = false;
 
-        abilityImage1.fillAmount = 0;
-        abilityImage2.fillAmount = 0;
-        abilityImage3.fillAmount = 0;
-        abilityImage4.fillAmount = 0;
-
-        abilityText1.text = string.Empty;
-        abilityText2.text = string.Empty;
-        abilityText3.text = string.Empty;
-        abilityText4.text = string.Empty;
+        foreach (Skill skill in skills)
+        {
+            skill.ResetCooldown();
+        }
     }
     public void CanvasSkillshot()
     {
         ray = cam.ScreenPointToRay(Input.mousePosition);
-
-        OnAbilitySkillShot1();
-        OnAbilitySkillShot2();
-        OnAbilitySkillShot3();
-        OnAbilitySkillShot4();
+        for (int i = 0;  i < skills.Count; i++)
+        {
+            if (skills[i] != null)
+            {
+                OnAbilitySkillShot(i);
+            }
+        }
 
         if (abilitiesCanvas.enabled)
         {
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, ground))
             {
-                position = hit.point;
+                mousePosition = hit.point;
             }
-            Quaternion abCanvas = Quaternion.LookRotation(position - transform.position);
+            Quaternion abCanvas = Quaternion.LookRotation(mousePosition - transform.position);
             abCanvas.eulerAngles = new Vector3(0, abCanvas.eulerAngles.y, abCanvas.eulerAngles.z);
 
             abilitiesCanvas.transform.rotation = Quaternion.Lerp(abCanvas, abilitiesCanvas.transform.rotation, 0);
         }
     }
     #region abilitiesInputs
+    public virtual void OnAbilitySkillShot(int index) { }
+
     private void AbilitiesInput()
     {
-        AbilityInput1();
-        AbilityInput2();
-        AbilityInput3();
-        AbilityInput4();
-    }
-    public void AbilityInput(int number,KeyCode abilityKey, bool isAbilityCooldown, Image abilitySkillshot)
-    {
-        if (Input.GetKeyDown(abilityKey) && !isAbilityCooldown)
+        foreach(Skill skill in skills)
         {
-            AbilityPressed(number);
+            AbilityInput(skill);
         }
-        if (abilitySkillshot.enabled)
+    }
+    public void AbilityInput(Skill skill)
+    {
+        if (casting) return;
+        if (Input.GetKeyDown(skill.Key) && !skill.IsCooldown)
+        {
+            AbilityPressed(skill);
+        }
+        if (skill.skillshot.enabled)
         {
             if (Input.anyKeyDown) 
             {
-                if (Input.GetKeyDown(abilityKey)) return;
+                if (Input.GetKeyDown(skill.Key)) return;
 
                 if (Input.GetMouseButton(1))
                 {
-                    CancelSkill(number, abilitySkillshot);
+                    CancelSkill(skill);
                 }
                 else
                 {
-                    AbilityReleased(number);
+                    AbilityReleased(skill);
                 }
             }
-            if (Input.GetKeyUp(abilityKey))
+            if (Input.GetKeyUp(skill.Key))
             {
-                AbilityReleased(number);
+                AbilityReleased(skill);
             }
         }
     }
-    public virtual void CancelSkill(int number, Image abilitySkillshot)
+    public virtual void CancelSkill(Skill skill)
     {
-        abilitiesCanvas.enabled = false;
-        abilitySkillshot.enabled = false;
-    }
-    private void AbilityInput1()
-    {
-        AbilityInput(1, abilityKey1, isAbilityCooldown1, abilitySkillshot1);
+        skill.CancelSkill();
+        highlight.enabled = true;
 
-        /*if (Input.GetKeyDown(abilityKey1) && !isAbilityCooldown1)
-        {
-            AbilityPressed(1);
-        }
-        if (Input.GetKey(abilityKey1) && Input.GetMouseButtonDown(1)) abilitySkillshot1.enabled = false;
-        if (Input.GetKeyUp(abilityKey1) && abilitySkillshot1.enabled)
-        {
-            isAbilityCooldown1 = true;
-            currentAbilityCooldown1 = abilityCooldown1;
-            AbilityReleased(1);
-        }*/
+        abilitiesCanvas.enabled = false;
     }
-    private void AbilityInput2()
+    public virtual void AbilityPressed(Skill skill)
     {
-        AbilityInput(2, abilityKey2, isAbilityCooldown2, abilitySkillshot2);
-    }
-    private void AbilityInput3()
-    {
-        AbilityInput(3, abilityKey3, isAbilityCooldown3, abilitySkillshot3);
-    }
-    private void AbilityInput4()
-    {
-        AbilityInput(4, abilityKey4, isAbilityCooldown4, abilitySkillshot4);
-    }
-    public virtual void AbilityPressed(int abilityIndex)
-    {
-        /*if (casting) return;
-        casting = true;*/
+        skill.SkillInput();
+        highlight.UnableHighlight();
+        highlight.enabled = false;
+
         abilitiesCanvas.enabled = true;
-        if (abilityIndex == 1)
-        {
-            OnAbilityPressed1();
-        }
-        else if (abilityIndex == 2)
-        {
-            OnAbilityPressed2();
-        }
-        else if (abilityIndex == 3)
-        {
-            OnAbilityPressed3();
-        }
-        else if (abilityIndex == 4)
-        {
-            OnAbilityPressed4();
-        }
     }
-    public virtual void AbilityReleased(int abilityIndex)
+    public virtual void AbilityReleased(Skill skill)
     {
-        anim.SetTrigger("Skill" + abilityIndex);
+        moveScript.Stop(mousePosition);
+
+        casting = true;
+        highlight.enabled = true;
+        anim.SetFloat("SkillIndex", skills.IndexOf(skill) + 1);
+        anim.SetTrigger("Skill");
         abilitiesCanvas.enabled = false;
-        if (abilityIndex == 1)
-        {
-            OnAbilityReleased1();
-        }
-        else if (abilityIndex == 2)
-        {
-            OnAbilityReleased2();
-        }
-        else if (abilityIndex == 3)
-        {
-            OnAbilityReleased3();
-        }
-        else if (abilityIndex == 4)
-        {
-            OnAbilityReleased4();
-        }
+        skill.SkillReleased();
+        moveScript.enabled = false;
     }
-    public virtual void OnAbilityPressed1() 
-    {
-        abilitySkillshot1.enabled = true;
-
-    }
-    public virtual void OnAbilityPressed2() 
-    {
-        abilitySkillshot2.enabled = true;
-    }
-    public virtual void OnAbilityPressed3() { 
-        abilitySkillshot3.enabled = true;
-    }
-    public virtual void OnAbilityPressed4() 
-    {
-        abilitySkillshot4.enabled = true;
-    }
-    public virtual void OnAbilityReleased1() 
-    {
-        abilitySkillshot1.enabled = false;
-        isAbilityCooldown1 = true;
-        currentAbilityCooldown1 = abilityCooldown1;
-    }
-    public virtual void OnAbilityReleased2() 
-    { 
-        abilitySkillshot2.enabled = false;
-        isAbilityCooldown2 = true;
-        currentAbilityCooldown2 = abilityCooldown2;
-    }
-    public virtual void OnAbilityReleased3() 
-    {
-        abilitySkillshot3.enabled = false;
-        isAbilityCooldown3 = true;
-        currentAbilityCooldown3 = abilityCooldown3;
-    }
-    public virtual void OnAbilityReleased4()
-    {
-        abilitySkillshot4.enabled = false;
-        isAbilityCooldown4 = true;
-        currentAbilityCooldown4 = abilityCooldown4;
-    }
-
-    public virtual void OnAbilitySkillShot1() { }
-    public virtual void OnAbilitySkillShot2() { }
-    public virtual void OnAbilitySkillShot3() { }
-    public virtual void OnAbilitySkillShot4() { }
 
     public void UseSkill(int number)
     {
+        moveScript.enabled = true;
+        casting = false;
         switch (number)
         {
             case 1: Skill1(); break;
@@ -302,43 +261,22 @@ public class Abilities : MonoBehaviour
 
     private void Cooldowns()
     {
-        AbilityCooldown(ref currentAbilityCooldown1, abilityCooldown1, ref isAbilityCooldown1, abilityImage1, abilityText1);
-        AbilityCooldown(ref currentAbilityCooldown2, abilityCooldown2, ref isAbilityCooldown2, abilityImage2, abilityText2);
-        AbilityCooldown(ref currentAbilityCooldown3, abilityCooldown3, ref isAbilityCooldown3, abilityImage3, abilityText3);
-        AbilityCooldown(ref currentAbilityCooldown4, abilityCooldown4, ref isAbilityCooldown4, abilityImage4, abilityText4);
-    }
-    private void AbilityCooldown(ref float currentCooldown, float maxCooldown, ref bool isCooldown, Image skillImage, TextMeshProUGUI skillText)
-    {
-        if (isCooldown)
+        foreach(Skill skill in skills)
         {
-            currentCooldown -= Time.deltaTime;
-            if(currentCooldown <= 0f)
-            {
-                isCooldown = false;
-                currentCooldown = 0f;
+            skill.CheckCooldown();
+        }
+    }
+    public void FinishSkillAnimation()
+    {
+        moveScript.Walk();
+    }
 
-                if(skillImage != null)
-                {
-                    skillImage.fillAmount = 0;
-                }
-                if(skillText != null)
-                {
-                    skillText.text = "";
-                }
-            }
-            else 
-            {
-                if (skillImage != null)
-                {
-                    skillImage.fillAmount = currentCooldown / maxCooldown;
-                }
-                
-                if (skillText != null)
-                {
-                    skillText.text = Mathf.Ceil(currentCooldown).ToString();
-                }
-            }
-
+    private void OnDrawGizmos()
+    {
+        foreach (Skill skill in skills)
+        {
+            Gizmos.color = skill.gizmosColor;
+            Gizmos.DrawWireSphere(transform.position + new Vector3(0, 1, 0), skill.Range);
         }
     }
 }

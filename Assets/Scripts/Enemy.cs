@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    [SerializeField]
     private bool dead;
     [SerializeField]
     private Transform projectileTarget;

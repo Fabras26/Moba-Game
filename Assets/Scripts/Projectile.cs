@@ -11,13 +11,15 @@ public class Projectile : MonoBehaviour
     private bool started = false;
     private Rigidbody rb;
     private float damage;
-
+    private bool destroyOnCollision;
     Vector3 direction;
     Vector3 targetPosition;
+
+    private bool isTarget = true;
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
-    }
+    }   
     void Update()
     {
         if (!started) return;
@@ -30,10 +32,11 @@ public class Projectile : MonoBehaviour
         {
             direction = targetPosition - transform.position;
 
-            if (Vector3.Distance(targetPosition, transform.position) < 0.5) Destroy(gameObject); 
+            if (Vector3.Distance(targetPosition, transform.position) < 0.5 * transform.localScale.x) Destroy(gameObject); 
         }
 
         rb.velocity = direction.normalized * speed;
+        rb.AddRelativeTorque(direction);
         transform.LookAt(targetPosition);
     }
     public void SetTarget(GameObject enemy, Transform newTarget, float newDamage, float newSpeed = -1)
@@ -44,29 +47,35 @@ public class Projectile : MonoBehaviour
         targetPoint = newTarget;
         started = true;
     }
-    public void SetTarget(GameObject enemy, Vector3 newTarget, float newDamage, float newSpeed = -1)
+    public void SetTarget(Vector3 newTarget, float newDamage,bool newIsTarget = true,bool newDestroyOnCollision = true, float newSpeed = -1)
     {
         if (newSpeed != -1) speed = newSpeed;
+        destroyOnCollision = newDestroyOnCollision;
+        isTarget = newIsTarget;
         damage = newDamage;
-        targetObject = enemy;
         targetPosition = newTarget;
         started = true;
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (targetObject == null) return;
-        if(other.transform == targetObject.transform)
+        if (targetObject == null && isTarget) return;
+
+        if(other.CompareTag("Enemy"))
         {
             var health = other.GetComponent<Stats>();
-            if(health)
+            if (isTarget)
+            {
+                if (other.transform != targetObject.transform)
+                {
+                    return;
+                }
+            }
+            if (health)
             {
                 health.TakeDamage(damage);
+                if(destroyOnCollision) Destroy(gameObject);
             }
-            else
-            {
-                Destroy(other.gameObject);
-            }
-            Destroy(gameObject);
+
         }
     }
 

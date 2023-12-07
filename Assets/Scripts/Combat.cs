@@ -23,8 +23,9 @@ public class Combat : MonoBehaviour
     void Update()
     {
         target = moveScript.GetTarget();
-        if (target != null && Vector3.Distance(transform.position, target.transform.position) <= stats.Range && target.isDead())
+        if (target != null && Vector3.Distance(transform.position, target.transform.position) <= stats.Range && !target.isDead())
         {
+
             anim.SetBool("Attack", true);
         }
         else
