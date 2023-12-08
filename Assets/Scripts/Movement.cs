@@ -21,6 +21,7 @@ public class Movement : MonoBehaviour
     private Vector3 targetPosition;
 
     private Stats stats;
+
     void Start()
     {
         stats = GetComponent<Stats>();
@@ -43,7 +44,7 @@ public class Movement : MonoBehaviour
     }
     void Move()
     {
-        if (Input.GetMouseButton(1))
+        if (Input.GetMouseButtonDown(1))
         {
             var ray = GameCamera.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
@@ -67,6 +68,7 @@ public class Movement : MonoBehaviour
                 agent.SetDestination(targetEnemy.transform.position);
             }
         }
+      
     }
 
     void Animation()
@@ -85,6 +87,7 @@ public class Movement : MonoBehaviour
     }
     public virtual void GoTo(Enemy target)
     {
+        if (target == null) return;
         highlight.SelectHighlight(target.transform);
         targetEnemy = target;
         agent.SetDestination(target.transform.position);
@@ -117,6 +120,7 @@ public class Movement : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position + new Vector3(0,1,0), stats.Range);
     }
+    
 
 
 }

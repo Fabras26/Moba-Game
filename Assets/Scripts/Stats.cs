@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -27,6 +28,7 @@ public enum ModifierType
 
 public class Stats : MonoBehaviour
 {
+    private Animator anim;
     [SerializeField]
     private StatsSO initialState;
     [SerializeField]
@@ -67,8 +69,6 @@ public class Stats : MonoBehaviour
     public float Mana { get => mana; set => mana = value; }
     public float MoveSpeed { get => moveSpeed; set => moveSpeed = value; }
     public float Cdr { get => cdr; set => cdr = value; }
-
-
     public void ModifyStatus(StatsType status, ModifierType modifier, float value)
     {
         switch (status)
@@ -85,6 +85,7 @@ public class Stats : MonoBehaviour
                 break;
             case StatsType.AttackSpeed:
                 ModifyStatusReference(ref attackSpeed, modifier, value);
+                UpdateAttackSpeed();
                 break;
             case StatsType.Damage:
                 ModifyStatusReference(ref damage, modifier, value);
@@ -127,6 +128,10 @@ public class Stats : MonoBehaviour
                 break;
         }
     }
+    public void UpdateAttackSpeed()
+    {
+        anim.SetFloat("AttackSpeed", AttackSpeed);
+    }
     public void TakeDamage(float damage)
     {
         Health-=damage;
@@ -137,6 +142,7 @@ public class Stats : MonoBehaviour
     }
     private void Awake()
     {
+        anim = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
         health = initialState.health;
         armor = initialState.armor;
@@ -151,6 +157,11 @@ public class Stats : MonoBehaviour
         moveSpeed = initialState.moveSpeed;
 
         cdr = 0;
+
+    }
+    private void Start()
+    {
+        UpdateAttackSpeed();
     }
     void Die()
     {

@@ -15,26 +15,31 @@ public class ArcherSkills : Abilities
     public float numberOfArrowsCone = 5;
     public float coneAngle = 30;
     [Header("Ability 3 Properties")]
-    public float timeActiveBoost;
-    public Outline outline/
+    public bool isBoostActive;
+    public float timeActiveBoost = 5;
+    private float currentTimerBoost;
+    private Outline outline;
+    private Stats stats;
     Vector3 skillDirection;
     Vector3 direction;
     public override void OnStart()
     {
+        outline = GetComponent<Outline>();
+        stats = GetComponent<Stats>();
     }
     public override void OnUpdate()
     {
         base.OnUpdate();
-
+        BoostAttackSpeed();
     }
     public override void AbilityPressed(Skill skill) 
     {
         base.AbilityPressed(skill);
-        if(skills.IndexOf(skill) == 2) AbilityReleased(skill);
+        if(skills.IndexOf(skill) == 2) AbilityReleased(skill, true);
     }
-    public override void AbilityReleased(Skill skill) 
+    public override void AbilityReleased(Skill skill, bool stop = true) 
     { 
-        base.AbilityReleased(skill);
+        base.AbilityReleased(skill, stop);
         direction = (mousePosition - transform.position).normalized;
 
         skillDirection = transform.position + direction * skills[skills.IndexOf(skill)].Range;
@@ -43,6 +48,20 @@ public class ArcherSkills : Abilities
     {
         base.OnAbilitySkillShot(index);
         //RainArrowsSkillshot();
+    }
+    public void BoostAttackSpeed()
+    {
+        if (isBoostActive)
+        {
+            currentTimerBoost += Time.deltaTime;
+            if(currentTimerBoost >= timeActiveBoost)
+            {
+                isBoostActive = false;
+                currentTimerBoost = 0;
+                outline.enabled = false;
+                stats.ModifyStatus(StatsType.AttackSpeed, ModifierType.Division, skills[2].Damage);
+            }
+        }
     }
     public void RainArrowsSkillshot()
     {
@@ -73,7 +92,7 @@ public class ArcherSkills : Abilities
     {
         var arrow = Instantiate(projectileAbility, arrowHand.position, arrowHand.rotation);
         arrow.transform.localScale = Vector3.one * 3;
-        skillDirection.y = arrow.transform.position.y;
+        skillDirection.y = -2f;
         arrow.SetTarget(skillDirection, skills[0].Damage, false, false);
     }
     public override void Skill2()
@@ -97,8 +116,10 @@ public class ArcherSkills : Abilities
     }
     public override void Skill3()
     {
-        GetComponent<Outline>().enabled = true;
-
+        isBoostActive = true;
+        currentTimerBoost = 0;
+        outline.enabled = true;
+        stats.ModifyStatus(StatsType.AttackSpeed, ModifierType.Multiplication, skills[2].Damage);
     }
     public override void Skill4()
     {

@@ -226,9 +226,10 @@ public class Abilities : MonoBehaviour
 
         abilitiesCanvas.enabled = true;
     }
-    public virtual void AbilityReleased(Skill skill)
+    public virtual void AbilityReleased(Skill skill, bool stop = true)
     {
-        moveScript.Stop(mousePosition);
+        if(stop) moveScript.Stop(mousePosition);
+
 
         casting = true;
         highlight.enabled = true;
@@ -241,7 +242,6 @@ public class Abilities : MonoBehaviour
 
     public void UseSkill(int number)
     {
-        moveScript.enabled = true;
         casting = false;
         switch (number)
         {
@@ -268,6 +268,7 @@ public class Abilities : MonoBehaviour
     }
     public void FinishSkillAnimation()
     {
+        moveScript.enabled = true;
         moveScript.Walk();
     }
 

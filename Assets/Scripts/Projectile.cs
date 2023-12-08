@@ -11,11 +11,13 @@ public class Projectile : MonoBehaviour
     private bool started = false;
     private Rigidbody rb;
     private float damage;
-    private bool destroyOnCollision;
+    private bool destroyOnCollision = true;
     Vector3 direction;
     Vector3 targetPosition;
 
     private bool isTarget = true;
+    public Transform particleSpawn;
+    public ParticleSystem particles;
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -41,6 +43,7 @@ public class Projectile : MonoBehaviour
     }
     public void SetTarget(GameObject enemy, Transform newTarget, float newDamage, float newSpeed = -1)
     {
+        if(enemy == null) Destroy(gameObject);
         if(newSpeed != -1) speed = newSpeed;
         damage = newDamage;
         targetObject = enemy;
@@ -62,6 +65,7 @@ public class Projectile : MonoBehaviour
 
         if(other.CompareTag("Enemy"))
         {
+
             var health = other.GetComponent<Stats>();
             if (isTarget)
             {
@@ -72,6 +76,13 @@ public class Projectile : MonoBehaviour
             }
             if (health)
             {
+                var p = Instantiate(particles, particleSpawn.position, particleSpawn.rotation);
+                if(transform.localScale.x < 6)
+                p.transform.localScale = p.transform.localScale * transform.localScale.x;
+                else
+                {
+                    p.transform.localScale = Vector3.one * 6;
+                }
                 health.TakeDamage(damage);
                 if(destroyOnCollision) Destroy(gameObject);
             }
