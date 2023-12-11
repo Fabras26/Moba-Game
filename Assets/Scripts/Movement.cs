@@ -15,7 +15,7 @@ public class Movement : MonoBehaviour
     public float rotateVelocity = 1f;
     float motionSmoothTime = 0.1f;
 
-    private Enemy targetEnemy;
+    private Stats targetEnemy;
     private HighlightManager highlight;
 
     private Vector3 targetPosition;
@@ -31,7 +31,7 @@ public class Movement : MonoBehaviour
         highlight = GetComponent<HighlightManager>();
         agent.speed = stats.MoveSpeed;
     }
-    public Enemy GetTarget() 
+    public Stats GetTarget() 
     {
         return targetEnemy;
     }
@@ -55,9 +55,9 @@ public class Movement : MonoBehaviour
                     targetPosition = hit.point;
                     GoTo(targetPosition);
                 }
-                if (hit.collider.GetComponent<Enemy>())
+                if (hit.collider.GetComponent<Stats>() && hit.collider.tag == "Enemy")
                 {
-                    GoTo(hit.collider.GetComponent<Enemy>());
+                    GoTo(hit.collider.GetComponent<Stats>());
                 }
             }
         }
@@ -85,7 +85,7 @@ public class Movement : MonoBehaviour
         agent.stoppingDistance = 0;
         Rotation(position);
     }
-    public virtual void GoTo(Enemy target)
+    public virtual void GoTo(Stats target)
     {
         if (target == null) return;
         highlight.SelectHighlight(target.transform);

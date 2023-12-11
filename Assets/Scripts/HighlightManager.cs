@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class HighlightManager : MonoBehaviour
 {
-   public Transform highlightedObj;
-    public Transform selectedObj;
+   private Transform highlightedObj;
+    private Transform selectedObj;
     public LayerMask selectableLayer;
 
     private Outline highlighOutline;

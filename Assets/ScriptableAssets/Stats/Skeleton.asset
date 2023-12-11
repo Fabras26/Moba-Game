@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c435210f7a347bd418b5ff076d8e901e, type: 3}
   m_Name: Skeleton
   m_EditorClassIdentifier: 
-  health: 200
+  health: 500
   armor: 26
   magicResist: 30
   attackSpeed: 2
   damage: 65
-  range: 6
+  range: 2
   crit: 0
   mana: 300
   moveSpeed: 5

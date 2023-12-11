@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RangedCombat : Combat
+public class RangedCombat : CombatPlayer
 {
     [Header("Projectile")]
     public Projectile projectilePrefab;
@@ -11,7 +11,7 @@ public class RangedCombat : Combat
     {
         base.Attack();
         var projectile = Instantiate(projectilePrefab, spawnProjectilePosition.position, spawnProjectilePosition.rotation);
-        projectile.SetTarget(target.gameObject,target.GetTarget(), stats.damage);
+        projectile.SetTarget(target.gameObject,target.GetTarget(), stats.Damage);
     }
     public void RangedAttack()
     {

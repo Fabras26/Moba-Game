@@ -10,6 +10,7 @@ public class Projectile : MonoBehaviour
     private Transform targetPoint;
     private bool started = false;
     private Rigidbody rb;
+    private BoxCollider boxCollider;
     private float damage;
     private bool destroyOnCollision = true;
     Vector3 direction;
@@ -21,6 +22,7 @@ public class Projectile : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+        boxCollider = GetComponent<BoxCollider>();
     }   
     void Update()
     {
@@ -34,11 +36,10 @@ public class Projectile : MonoBehaviour
         {
             direction = targetPosition - transform.position;
 
-            if (Vector3.Distance(targetPosition, transform.position) < 0.5 * transform.localScale.x) Destroy(gameObject); 
+            if (Vector3.Distance(targetPosition, transform.position) < boxCollider.size.z * transform.localScale.z) Destroy(gameObject); 
         }
 
         rb.velocity = direction.normalized * speed;
-        rb.AddRelativeTorque(direction);
         transform.LookAt(targetPosition);
     }
     public void SetTarget(GameObject enemy, Transform newTarget, float newDamage, float newSpeed = -1)

@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
 
 public enum StatsType
 {
+    MaxHealth,
     Health,
     Armor,
     MagicResist,
@@ -33,27 +35,33 @@ public class Stats : MonoBehaviour
     private StatsSO initialState;
     [SerializeField]
     private NavMeshAgent agent;
-    
+    [SerializeField]
+    private Transform projectileTarget;
+    [SerializeField]
+    private HealthUI healthUI;
 
-    public float health;
-    public float armor;
-    public float magicResist;
-    public float attackSpeed;
-    public float damage;
-    public float range;
-    public float crit;
-    public float mana;
-    
-    public float moveSpeed;
-    
-    public float cdr;
+    public UnityEvent OnDie;
+    private float maxHealth;
+    private float health;
+    private float armor;
+    private float magicResist;
+    private float attackSpeed;
+    private float damage;
+    private float range;
+    private float crit;
+    private float mana; 
+    private float moveSpeed;
+    private float cdr;
 
+    private bool dead;
     public float Health 
     {
         get => health; 
         set 
         { 
             health = value;
+            UpdateHealthBar();
+
             if (health <= 0) 
             {
                 Die();
@@ -69,12 +77,20 @@ public class Stats : MonoBehaviour
     public float Mana { get => mana; set => mana = value; }
     public float MoveSpeed { get => moveSpeed; set => moveSpeed = value; }
     public float Cdr { get => cdr; set => cdr = value; }
+    public float MaxHealth { get => maxHealth; set => maxHealth = value; }
+
     public void ModifyStatus(StatsType status, ModifierType modifier, float value)
     {
         switch (status)
         {
+            case StatsType.MaxHealth:
+                ModifyStatusReference(ref maxHealth, modifier, value);
+                UpdateHealthBar();
+                break;
+
             case StatsType.Health:
                 ModifyStatusReference(ref health, modifier,value);
+                UpdateHealthBar();
                 break;
             case StatsType.Armor:
                 ModifyStatusReference(ref armor, modifier, value);
@@ -128,6 +144,14 @@ public class Stats : MonoBehaviour
                 break;
         }
     }
+    public bool isDead()
+    {
+        return dead;
+    }
+    public Transform GetTarget()
+    {
+        return projectileTarget;
+    }
     public void UpdateAttackSpeed()
     {
         anim.SetFloat("AttackSpeed", AttackSpeed);
@@ -135,6 +159,10 @@ public class Stats : MonoBehaviour
     public void TakeDamage(float damage)
     {
         Health-=damage;
+    }
+    public void UpdateHealthBar()
+    {
+        healthUI.SetTargetHealth(maxHealth, health);
     }
     private void UpdateMoveSpeed()
     {
@@ -144,6 +172,9 @@ public class Stats : MonoBehaviour
     {
         anim = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
+        healthUI = GetComponent<HealthUI>();
+
+        maxHealth = initialState.health;
         health = initialState.health;
         armor = initialState.armor;
         magicResist = initialState.magicResist;
@@ -162,9 +193,12 @@ public class Stats : MonoBehaviour
     private void Start()
     {
         UpdateAttackSpeed();
+        healthUI.SetValues(maxHealth);
     }
     void Die()
     {
+        if(gameObject.tag == "Enemy") ScoreManager.instance.AddPoints();
+        OnDie?.Invoke();
         Destroy(gameObject);
     }
 }
