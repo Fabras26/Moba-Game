@@ -363,7 +363,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Enemies Defeat: '
+  m_text: 'Highscore: '
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 2086965ab674e494f8d5d263ebebaa25, type: 2}
   m_sharedMaterial: {fileID: -3328755292141165929, guid: 2086965ab674e494f8d5d263ebebaa25, type: 2}

@@ -15,9 +15,9 @@ MonoBehaviour:
   health: 500
   armor: 26
   magicResist: 30
-  attackSpeed: 2
+  attackSpeed: 3
   damage: 65
   range: 2
   crit: 0
   mana: 300
-  moveSpeed: 5
+  moveSpeed: 5.5
