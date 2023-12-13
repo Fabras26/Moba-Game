@@ -19,7 +19,7 @@ public class EnemyMelee : Combat
     {
         base.OnStart();
         agent = GetComponent<NavMeshAgent>();
-        target = GameObject.Find("Player").GetComponent<Stats>();
+        target = GameObject.Find("Player").GetComponent<IDamageable>();
     }
     public override void OnUpdate()
     {
@@ -32,7 +32,7 @@ public class EnemyMelee : Combat
             if (timeFindPlayer > 0.5f && canWalk)
             {
                 timeFindPlayer = 0;
-                targetPosition = target.transform.position;
+                targetPosition = target.GetPosition();
                 agent.SetDestination(targetPosition);
             }
         }
@@ -43,7 +43,7 @@ public class EnemyMelee : Combat
     }
     public override void Attack()
     {
-        if (Vector3.Distance(target.transform.position, transform.position) < stats.Range && stats != null)
+        if (Vector3.Distance(target.GetPosition(), transform.position) < stats.Range && stats != null)
         {
             target.TakeDamage(stats.Damage);
         }

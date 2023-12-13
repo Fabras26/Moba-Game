@@ -67,7 +67,7 @@ public class Projectile : MonoBehaviour
         if(other.CompareTag("Enemy"))
         {
 
-            var health = other.GetComponent<Stats>();
+            var health = other.GetComponent<IDamageable>();
             if (isTarget)
             {
                 if (other.transform != targetObject.transform)
@@ -75,7 +75,7 @@ public class Projectile : MonoBehaviour
                     return;
                 }
             }
-            if (health)
+            if (health != null)
             {
                 var p = Instantiate(particles, particleSpawn.position, particleSpawn.rotation);
                 if(transform.localScale.x < 6)

@@ -26,9 +26,18 @@ public enum ModifierType
     Multiplication,
     Division
 }
+public interface IDamageable 
+{
+    public bool IsDead { get; set; }
+    public void TakeDamage(float damage);
+    public Vector3 GetPosition();
+    public GameObject GetObject();
+    public Transform GetTarget();
+}
+
 [ExecuteInEditMode]
 
-public class Stats : MonoBehaviour
+public class Stats : MonoBehaviour, IDamageable
 {
     private Animator anim;
     [SerializeField]
@@ -78,6 +87,7 @@ public class Stats : MonoBehaviour
     public float MoveSpeed { get => moveSpeed; set => moveSpeed = value; }
     public float Cdr { get => cdr; set => cdr = value; }
     public float MaxHealth { get => maxHealth; set => maxHealth = value; }
+    public bool IsDead { get => dead; set => dead = value; }
 
     public void ModifyStatus(StatsType status, ModifierType modifier, float value)
     {
@@ -200,5 +210,15 @@ public class Stats : MonoBehaviour
         if(gameObject.tag == "Enemy") ScoreManager.instance.AddPoints();
         OnDie?.Invoke();
         Destroy(gameObject);
+    }
+
+    public Vector3 GetPosition()
+    {
+        return transform.position;
+    }
+
+    public GameObject GetObject()
+    {
+        return gameObject;
     }
 }

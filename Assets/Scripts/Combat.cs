@@ -9,7 +9,7 @@ public class Combat : MonoBehaviour
 {
     protected Stats stats;
     protected Animator anim;
-    protected Stats target;
+    protected IDamageable target;
 
     protected bool canAttack;
     void Start()
@@ -30,7 +30,7 @@ public class Combat : MonoBehaviour
     void Update()
     {
         OnUpdate();
-        if (target != null && Vector3.Distance(transform.position, target.transform.position) <= stats.Range && !target.isDead())
+        if (target != null && Vector3.Distance(transform.position, target.GetPosition()) <= stats.Range && !target.IsDead)
         {
 
             anim.SetBool("Attack", true);

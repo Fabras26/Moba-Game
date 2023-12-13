@@ -11,7 +11,7 @@ public class RangedCombat : CombatPlayer
     {
         base.Attack();
         var projectile = Instantiate(projectilePrefab, spawnProjectilePosition.position, spawnProjectilePosition.rotation);
-        projectile.SetTarget(target.gameObject,target.GetTarget(), stats.Damage);
+        projectile.SetTarget(target.GetObject(),target.GetTarget(), stats.Damage);
     }
     public void RangedAttack()
     {
